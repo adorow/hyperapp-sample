@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link
+            rel="stylesheet"
+            href="style.css"
+    />
+    <script type="module">
+        import { h, text, app } from "https://unpkg.com/hyperapp"
+
+        // -- EFFECTS & SUBSCRIPTIONS --
+
+        // -- ACTIONS --
+
+        // -- VIEWS ---
+        const emphasize = (word, string) =>
+            string
+                .split(" ")
+                .map((x) =>
+                    x.toLowerCase() === word.toLowerCase() ? h("em", {}, text(x + " ")) : text(x + " ")
+                )
+
+        const storyThumbnail = (props) =>
+            h(
+                "li",
+                {
+                    class: {
+                        unread: props.unread,
+                        reading: props.reading,
+                    },
+                },
+                [
+                    h("p", { class: "title" }, emphasize(props.filter, props.title)),
+                    h("p", { class: "author" }, text(props.author)),
+                ]
+            )
+
+        const storyList = (props) =>
+            h("div", { class: "stories" }, [
+                h(
+                    "ul",
+                    {},
+                    Object.keys(props.stories).map((id) =>
+                        storyThumbnail({
+                            id,
+                            title: props.stories[id].title,
+                            author: props.stories[id].author,
+                            unread: !props.stories[id].seen,
+                            reading: props.reading === id,
+                            filter: props.filter,
+                        })
+                    )
+                ),
+            ])
+
+        const filterView = (props) =>
+            h("div", { class: "filter" }, [
+                text("Filter:"),
+                h("span", { class: "filter-word" }, text(props.filter)),
+                h("button", {}, text("\u270E")),
+            ])
+
+        const storyDetail = (props) =>
+            h("div", { class: "story" }, [
+                props && h("h1", {}, text(props.title)),
+                props &&
+                h(
+                    "p",
+                    {},
+                    text(`
+    Lorem ipsum dolor sit amet, consectetur adipiscing
+    elit, sed do eiusmod tempor incididunt ut labore et
+    dolore magna aliqua. Ut enim ad minim veniam, qui
+    nostrud exercitation ullamco laboris nisi ut aliquip
+    ex ea commodo consequat.
+      `)
+                ),
+                props && h("p", { class: "signature" }, text(props.author)),
+            ])
+
+        const autoUpdateView = (props) =>
+            h("div", { class: "autoupdate" }, [
+                text("Auto update: "),
+                h("input", { type: "checkbox" }),
+            ])
+
+        const container = (content) => h("div", { class: "container" }, content)
+
+        // -- RUN --
+        app({
+            init: {},
+            node: document.getElementById("app"),
+            // view: () => h("h1", {}, [text("Hello "), h("i", {}, text("World!"))]),
+            view: () =>
+                container([
+                    filterView({
+                        filter: "ocean",
+                    }),
+                    storyList({
+                        stories: {
+                            "112": {
+                                title: "The Ocean is Sinking",
+                                author: "Kat Stropher",
+                                seen: false,
+                            },
+                            "113": {
+                                title: "Ocean life is brutal",
+                                author: "Surphy McBrah",
+                                seen: true,
+                            },
+                            "114": {
+                                title: "Family friendly fun at the ocean exhibit",
+                                author: "Guy Prosales",
+                                seen: true,
+                            },
+                        },
+                        reading: "113",
+                        filter: "ocean",
+                    }),
+                    storyDetail({
+                        title: "Ocean life is brutal",
+                        author: "Surphy McBrah",
+                    }),
+                    autoUpdateView(),
+                ])
+        })
+    </script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+</html>

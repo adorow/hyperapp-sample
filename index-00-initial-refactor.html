@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link
+            rel="stylesheet"
+            href="style.css"
+    />
+    <script type="module">
+        import { h, text, app } from "https://unpkg.com/hyperapp"
+
+        // -- EFFECTS & SUBSCRIPTIONS --
+
+        // -- ACTIONS --
+
+        // -- VIEWS ---
+        const emphasize = (word, string) =>
+            string
+                .split(" ")
+                .map((x) =>
+                    x.toLowerCase() === word.toLowerCase() ? h("em", {}, text(x + " ")) : text(x + " ")
+                )
+
+        const storyThumbnail = (props) =>
+            h(
+                "li",
+                {
+                    class: {
+                        unread: props.unread,
+                        reading: props.reading,
+                    },
+                },
+                [
+                    h("p", { class: "title" }, emphasize(props.filter, props.title)),
+                    h("p", { class: "author" }, text(props.author)),
+                ]
+            )
+
+        // -- RUN --
+        app({
+            init: {},
+            node: document.getElementById("app"),
+            // view: () => h("h1", {}, [text("Hello "), h("i", {}, text("World!"))]),
+            view: () =>
+                h("div", { id: "app", class: "container" }, [
+                    h("div", { class: "filter" }, [
+                        text(" Filter: "),
+                        h("span", { class: "filter-word" }, text("ocean")),
+                        h("button", {}, text("\u270E")),
+                    ]),
+                    h("div", { class: "stories" }, [
+                        h("ul", {}, [
+                            h("li", { class: "unread" }, [
+                                // h("p", { class: "title" }, [
+                                //     text("The "),
+                                //     h("em", {}, text("Ocean")),
+                                //     text(" is Sinking!"),
+                                // ]),
+                                h("p", {class: "title"}, emphasize("ocean",
+                                    "The Ocean is Sinking"
+                                )),
+                                h("p", { class: "author" }, text("Kat Stropher")),
+                            ]),
+                            h("li", { class: "reading" }, [
+                                h("p", { class: "title" }, [h("em", {}, text("Ocean")), text(" life is brutal")]),
+                                h("p", { class: "author" }, text("Surphy McBrah")),
+                            ]),
+                            h("li", {}, [
+                                h("p", { class: "title" }, [
+                                    text("Family friendly fun at the "),
+                                    h("em", {}, text("ocean")),
+                                    text(" exhibit"),
+                                ]),
+                                h("p", { class: "author" }, text("Guy Prosales")),
+                            ]),
+                        ]),
+                    ]),
+                    h("div", { class: "story" }, [
+                        h("h1", {}, text("Ocean life is brutal")),
+                        h(
+                            "p",
+                            {},
+                            text(`
+      Lorem ipsum dolor sit amet, consectetur adipiscing
+      elit, sed do eiusmod tempor incididunt ut labore et
+      dolore magna aliqua. Ut enim ad minim veniam, quis
+      nostrud exercitation ullamco laboris nisi ut aliquip
+      ex ea commodo consequat.
+    `)
+                        ),
+                        h("p", { class: "signature" }, text("Surphy McBrah")),
+                    ]),
+                    h("div", { class: "autoupdate" }, [
+                        text("Auto update: "),
+                        h("input", { type: "checkbox" }),
+                    ]),
+                ])
+        })
+    </script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+</html>
